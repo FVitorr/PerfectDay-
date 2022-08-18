@@ -10,7 +10,7 @@ print(datetime.datetime.today(),weekday_[datetime.datetime.today().weekday()])
 path = "C:\Wordspace\Python/18 - PROJETOS\QualyDay/"
 
 
-class qualyDay:
+class qualyDayLog:
     def __init__(self):
         #Iniciar base de dados
         try:
@@ -74,35 +74,34 @@ class qualyDay:
             nWeekday = self.extValue(entry_,"-s")
             iHour = self.extValue(entry_,"-h")
             fHour = self.extValue(entry_,"-hf")
-            print(fHour)
             task = entry[entry.index("-t") + 2:]
 
-            if (nWeekday.isdigit() == False or int(nWeekday) > 6 or int(nWeekday) < 0): status += "<< Valor -s não especificado ou Invalido\n"
-            else: fdate["nWeekday"] = nWeekday
-
-            iHour = self.extHour(iHour)
-            if (iHour == 'None'):
-                status +=  "<< Valor -h invalido"
+            if (nWeekday.isdigit() == False or int(nWeekday) > 6 or int(nWeekday) < 0 or nWeekday == 'None'): 
+                status += "<< Valor -s não especificado ou Invalido\n"
             else:
-                fdate["iHour"] = iHour
+                fdate["nWeekday"] = int(nWeekday)
+                iHour = self.extHour(iHour)
+                if (iHour == 'None'):
+                    status +=  "<< Valor -h invalido"
+                else:
+                    fdate["iHour"] = iHour
 
-            fHour = self.extHour(fHour)
-            if (fHour == 'None'):
-                status +=  "<< Valor -hf invalido"
-            else:
-                fdate["fHour"] = fHour
-
-            fdate["task"] = task
+                fHour = self.extHour(fHour)
+                if (fHour == 'None'):
+                    status +=  "<< Valor -hf invalido"
+                else:
+                    fdate["fHour"] = fHour
+                fdate["task"] = task
         else:
             print("Entry Invalid")
         print(status)
-        print(fdate)
-        return status
+        return status,fdate
  
 
 
     
-qualyDay_ = qualyDay()
-qualyDay_.writeLogFile("\ntest3")
+qualyDay_ = qualyDayLog()
 
-qualyDay_.fEntry("-s 8 -h 23:90 -hf 20:30 -t Algoritmo II")
+date = input("->")
+fdate = qualyDay_.fEntry(date)
+qualyDay_.writeLogFile("\n" + str(fdate[1]))

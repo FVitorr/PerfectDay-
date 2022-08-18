@@ -1,0 +1,3 @@
+
+
+{'nWeekday': 5, 'iHour': datetime.time(16, 0), 'fHour': datetime.time(17, 50), 'task': ' Matematica Discreta'}
