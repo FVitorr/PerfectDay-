@@ -1,3 +1,11 @@
-
-
-{'nWeekday': 5, 'iHour': datetime.time(16, 0), 'fHour': datetime.time(17, 50), 'task': ' Matematica Discreta'}
+{'nWeekday': 0, 'iHour': datetime.time(10, 10), 'task': ' TaskTest'}
+{'nWeekday': 6, 'task': ' kajs'}
+{'nWeekday': 6, 'task': ' kajs'}
+{'nWeekday': 6, 'task': ' kajs'}
+{'nWeekday': 6, 'task': ' kajs'}
+{'nWeekday': 6, 'task': ' kajs'}
+{'nWeekday': 6, 'task': ' kajs'}
+{'nWeekday': 0, 'task': ' psd'}
+{'nWeekday': 0, 'task': ' psd'}
+{'nWeekday': 0, 'task': ' psd'}
+{'nWeekday': 0, 'task': ' psd'}

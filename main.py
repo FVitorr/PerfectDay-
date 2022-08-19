@@ -24,10 +24,17 @@ class qualyDayLog:
     def readLogFile(self):
         with open(self.bd,"r") as arq:
             print(" -> Loaded log.txt ")
-            cont = arq.readline()
+            cont = arq.readlines()
         return cont
 
     def writeLogFile(self,text):
+        cont = self.readLogFile()
+        fatherDict = {}
+        for i in range(1,len(cont)+1):
+            cont[i] = cont[i].replace("\n","")
+            print(cont[i])
+            fatherDict[str(i)] = dict(cont[i])
+            print(fatherDict)
         with open(self.bd,"a") as arq:
             arq.writelines(text)
 
@@ -47,16 +54,17 @@ class qualyDayLog:
         return value
 
     def extHour(self,iHour):
-
+        Hour = 0
         try:
             if (iHour != None):
                 if (":" in iHour):
                     Hour = datetime.time(int(iHour[:iHour.index(":")]),int(iHour[iHour.index(":") + 1:len(iHour)]))
                 else:
                     Hour = datetime.time(int(iHour))
+            erro = 1
         except:
-            Hour = 'None'
-        return Hour
+            erro = 0
+        return Hour,erro
     def fEntry(self,entry): # Retorno ["Dia_semana","Hora Inicio","Hora Fim","Tarefa"]
         #Linha de Comando
         '''
@@ -81,27 +89,31 @@ class qualyDayLog:
             else:
                 fdate["nWeekday"] = int(nWeekday)
                 iHour = self.extHour(iHour)
-                if (iHour == 'None'):
+                if (iHour[1] == 1):
                     status +=  "<< Valor -h invalido"
                 else:
-                    fdate["iHour"] = iHour
+                    if (iHour[0] != 0):
+                        fdate["iHour"] = iHour[0]
 
                 fHour = self.extHour(fHour)
-                if (fHour == 'None'):
-                    status +=  "<< Valor -hf invalido"
+                if (fHour[1] == 1):
+                    status +=  "<< Valor -h invalido"
                 else:
-                    fdate["fHour"] = fHour
+                    if (fHour[0] != 0):
+                        fdate["iHour"] = fHour[0]
                 fdate["task"] = task
         else:
             print("Entry Invalid")
+            status += "Entry Invalid"
         print(status)
         return status,fdate
+        
  
 
 
-    
+
 qualyDay_ = qualyDayLog()
 
-date = input("->")
+date = "-s 0 -t psd"
 fdate = qualyDay_.fEntry(date)
-qualyDay_.writeLogFile("\n" + str(fdate[1]))
+qualyDay_.writeLogFile(str(fdate[1]) + '\n')
