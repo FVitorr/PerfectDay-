@@ -1,43 +1,79 @@
-from asyncio import tasks
-from calendar import weekday
 import os
 import datetime
+import ast 
 
 '''Criar Arquivo de Log - Onde guarda os dados'''
 weekday_ = ["Segunda - Feira","Terça - Feira","Quarta - Feira","Quinta- Feira","Sexta - Feira","Sabado","Domingo"]
-print(datetime.datetime.today(),weekday_[datetime.datetime.today().weekday()])
+class date_:
+    def __init__(self) -> None:
+        pass
+    def today(self):
+        weekday_ = ["Segunda - Feira","Terça - Feira","Quarta - Feira","Quinta- Feira","Sexta - Feira","Sabado","Domingo"]
+        return datetime.datetime.today(),datetime.datetime.today().weekday(),weekday_[datetime.datetime.today().weekday()]
+
+#print(datetime.datetime.today(),weekday_[datetime.datetime.today().weekday()])
 
 path = "C:\Wordspace\Python/18 - PROJETOS\QualyDay/"
+weekadayInfo = date_().today()
 
 
 class qualyDayLog:
     def __init__(self):
         #Iniciar base de dados
+        nameFile = path + "log.bin"
         try:
-            bd = open(path + "log.txt","r")
+            bd = open(nameFile,'rb')
         except:
-            bd = open(path + "log.txt","w")
+            bd = open(nameFile,'wb')
+            pass
 
-        bd.close()
-        self.bd = path + "log.txt"
+        self.bd = nameFile
 
     def readLogFile(self):
-        with open(self.bd,"r") as arq:
-            print(" -> Loaded log.txt ")
-            cont = arq.readlines()
-        return cont
+        with open(self.bd,'rb') as arq:
+            liner = arq.readlines()
+        lines = []
+        for i in liner:
+            lines.append(i.decode("ascii"))
+        return liner
+
+        with open(self.bd,'rb') as arq:
+            print(" -> Loaded log.bin ")
+            unpickler = pickle.Unpickler(arq)
+            print(unpickler)
+            scores = unpickler.load()
+        #print(scores)
+        return scores
 
     def writeLogFile(self,text):
-        cont = self.readLogFile()
-        fatherDict = {}
-        for i in range(1,len(cont)+1):
-            cont[i] = cont[i].replace("\n","")
-            print(cont[i])
-            fatherDict[str(i)] = dict(cont[i])
-            print(fatherDict)
-        with open(self.bd,"a") as arq:
-            arq.writelines(text)
+        res = text.encode("ascii")
+        with open(self.bd,"ab") as arq:
+            arq.write(res)
+        return (1)
 
+    def filter(self,key,text):
+        arq = self.readLogFile()
+        msg = "Nenhuma Tarefa para Hoje"
+        cont = 0
+        
+        #Bloco para transformar o bd em um array de objetos
+        task = {}
+        for i in range(len(arq)):
+            str_ = arq[i].decode("ascii").replace("\n","")
+            dictionary = ast.literal_eval(str_) 
+            task[cont] = dictionary
+            cont += 1
+
+        #buscar elementos
+        #print(task)
+        result = []
+        for i in range(len(task)): #i representa as key
+            if str(text) in str(task[i][key]):
+                result.append(task[i])
+                msg = "Tarefas para " + weekday_[weekadayInfo[1]]
+
+        return (msg,result)
+        
     def extValue(self,entry,parameter = "-s"):
         try:
             add = 2
@@ -84,7 +120,7 @@ class qualyDayLog:
             fHour = self.extValue(entry_,"-hf")
             task = entry[entry.index("-t") + 2:]
 
-            if (nWeekday.isdigit() == False or int(nWeekday) > 6 or int(nWeekday) < 0 or nWeekday == 'None'): 
+            if (nWeekday.isdigit() == False or int(nWeekday) > 7 or int(nWeekday) < 0 or nWeekday == 'None'): 
                 status += "<< Valor -s não especificado ou Invalido\n"
             else:
                 fdate["nWeekday"] = int(nWeekday)
@@ -107,13 +143,20 @@ class qualyDayLog:
             status += "Entry Invalid"
         print(status)
         return status,fdate
-        
+
+class format_:
+    def __init__(self) -> None:
+        pass
+    def table(dict_):
+        pass
  
 
+if __name__ == "__main__":
+    qualyDay_ = qualyDayLog()
 
+    date = "-s 6 -t psd"
+    fdate = qualyDay_.fEntry(date)
+    qualyDay_.writeLogFile(str(fdate[1]) + '\n')
 
-qualyDay_ = qualyDayLog()
+    print(qualyDay_.filter("nWeekday",6))
 
-date = "-s 0 -t psd"
-fdate = qualyDay_.fEntry(date)
-qualyDay_.writeLogFile(str(fdate[1]) + '\n')
